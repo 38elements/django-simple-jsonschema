@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.http import HttpResponse
+# import json
 
 
 class SimpleJsonschemaException(Exception):
@@ -37,6 +38,7 @@ class SimpleJsonschemaMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         # schema = self.get_schema(request)
+        # json_data = json.dumps(request.body)
         pass
 
     def process_exception(self, request, exception):
