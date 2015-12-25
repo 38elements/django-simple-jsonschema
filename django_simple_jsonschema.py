@@ -6,7 +6,9 @@ import json
 
 
 class SimpleJsonschemaException(Exception):
-    pass
+
+    def __init__(self, validation_error):
+        self.validation_error = validation_error
 
 
 class SimpleJsonschemaMiddleware(object):
@@ -44,7 +46,8 @@ class SimpleJsonschemaMiddleware(object):
         try:
             schema.validate(json_data)
         except ValidationError as e:
-            pass
+            raise SimpleJsonschemaException(e)
+        return None
 
     def process_exception(self, request, exception):
         if not isinstance(exception, SimpleJsonschemaException):
