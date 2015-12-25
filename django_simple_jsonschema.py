@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.http import HttpResponse
-# import json
+from jsonschema import Draft4Validator
+from jsonschema.exceptions import ValidationError
+import json
 
 
 class SimpleJsonschemaException(Exception):
@@ -25,10 +27,10 @@ class SimpleJsonschemaMiddleware(object):
             if isinstance(methods, tuple):
                 for method in methods:
                     schema_id = method.upper() + ':' + view_name
-                    self.schemas[schema_id] = schema
+                    self.schemas[schema_id] = Draft4Validator(schema)
             elif isinstance(methods, str):
                 schema_id = methods.upper() + ':' + view_name
-                self.schemas[schema_id] = schema
+                self.schemas[schema_id] = Draft4Validator(schema)
 
     def get_schema(self, request):
         view_name = request.resolver_match.view_name
@@ -37,9 +39,12 @@ class SimpleJsonschemaMiddleware(object):
         return self._schemas[key]
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        # schema = self.get_schema(request)
-        # json_data = json.dumps(request.body)
-        pass
+        schema = self.get_schema(request)
+        json_data = json.dumps(request.body)
+        try:
+            schema.validate(json_data)
+        except ValidationError as e:
+            pass
 
     def process_exception(self, request, exception):
         if not isinstance(exception, SimpleJsonschemaException):
