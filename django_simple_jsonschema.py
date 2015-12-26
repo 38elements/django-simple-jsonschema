@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.http import HttpResponse
 from jsonschema import Draft4Validator
-from jsonschema.exceptions import ValidationError
 import json
 
 
 class SimpleJsonschemaException(Exception):
 
-    def __init__(self, validation_error):
-        self.validation_error = validation_error
+    def __init__(self, errors):
+        self.errors = errors
 
 
 class SimpleJsonschemaMiddleware(object):
@@ -42,11 +41,10 @@ class SimpleJsonschemaMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         schema = self.get_schema(request)
-        json_data = json.dumps(request.body)
-        try:
-            schema.validate(json_data)
-        except ValidationError as e:
-            raise SimpleJsonschemaException(e)
+        json_data = json.dumps(request.body.decode(settings.SIMPLE_JSONSCHEMA_ENCODING))
+        errors = list(schema.iter_errors(json_data))
+        if len(errors):
+            raise SimpleJsonschemaException(errors)
         return None
 
     def process_exception(self, request, exception):
