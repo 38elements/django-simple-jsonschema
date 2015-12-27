@@ -19,9 +19,6 @@ class SimpleJsonschemaMiddleware(object):
     """
 
     def __init__(self):
-        self.ces = 'utf8'
-        if hasattr(settings, 'SIMPLE_JSONSCHEMA_ENCODING'):
-            self.ces = settings.SIMPLE_JSONSCHEMA_ENCODING
         self.set_schemas(settings.SIMPLE_JSONSCHEMA)
 
     def set_schemas(self, simple_jsonschema):
@@ -44,7 +41,7 @@ class SimpleJsonschemaMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         schema = self.get_schema(request)
-        json_data = json.dumps(request.body.decode(self.ces))
+        json_data = json.dumps(request.body.decode(request.encoding))
         errors = list(schema.iter_errors(json_data))
         if len(errors):
             raise SimpleJsonschemaException(errors)

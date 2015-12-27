@@ -32,17 +32,12 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
     def test_init(self):
         with self.settings(SIMPLE_JSONSCHEMA=s1):
             sj = SimpleJsonschemaMiddleware()
-            self.assertEqual(sj.ces, 'utf8')
             schema1 = s1[('post', 'foo:bar')]
             schema2 = sj.schemas['POST:foo:bar'].schema
             self.assertEqual(schema1, schema2)
-            with self.settings(SIMPLE_JSONSCHEMA_ENCODING='euc-jp'):
-                sj = SimpleJsonschemaMiddleware()
-                self.assertEqual(sj.ces, 'euc-jp')
 
         with self.settings(SIMPLE_JSONSCHEMA=s2):
             sj = SimpleJsonschemaMiddleware()
-            self.assertEqual(sj.ces, 'utf8')
             schema1 = s2[(('post', 'put'), 'foo:bar')]
             schema2 = sj.schemas['POST:foo:bar'].schema
             self.assertEqual(schema1, schema2)
