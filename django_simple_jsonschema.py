@@ -41,7 +41,7 @@ class SimpleJsonschemaMiddleware(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         schema = self.get_schema(request)
-        json_data = json.dumps(request.body.decode(request.encoding))
+        json_data = json.loads(request.body.decode(request.encoding), encoding=request.encoding)
         errors = list(schema.iter_errors(json_data))
         if len(errors):
             raise SimpleJsonschemaException(errors)
