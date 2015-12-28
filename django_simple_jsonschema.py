@@ -22,16 +22,16 @@ class SimpleJsonschemaMiddleware(object):
         self.set_schemas(settings.SIMPLE_JSONSCHEMA)
 
     def set_schemas(self, simple_jsonschema):
-        self.schemas = {}
+        self._schemas = {}
         for key, schema in simple_jsonschema.items():
             methods, view_name = key
             if isinstance(methods, tuple):
                 for method in methods:
                     schema_id = method.upper() + ':' + view_name
-                    self.schemas[schema_id] = Draft4Validator(schema)
+                    self._schemas[schema_id] = Draft4Validator(schema)
             elif isinstance(methods, str):
                 schema_id = methods.upper() + ':' + view_name
-                self.schemas[schema_id] = Draft4Validator(schema)
+                self._schemas[schema_id] = Draft4Validator(schema)
 
     def get_schema(self, request):
         view_name = request.resolver_match.view_name
