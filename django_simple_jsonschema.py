@@ -24,7 +24,7 @@ class SimpleJsonschemaMiddleware(object):
                 for method in methods:
                     schema_id = method.upper() + ':' + view_name
                     self._schemas[schema_id] = Draft4Validator(schema)
-            elif isinstance(methods, str):
+            elif isinstance(methods, unicode):
                 schema_id = methods.upper() + ':' + view_name
                 self._schemas[schema_id] = Draft4Validator(schema)
 

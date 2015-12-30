@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.test import TestCase
 from django_simple_jsonschema import SimpleJsonschemaMiddleware
+from django_simple_jsonschema import SimpleJsonschemaException
 from collections import namedtuple
 from jsonschema import Draft4Validator
 
@@ -79,6 +80,19 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
                 'POST', resolver_match, json_str, 'utf8')
             result = sj.process_view(request, None, None, None)
             self.assertIsNone(result)
+            with self.assertRaises(SimpleJsonschemaException):
+                sj = SimpleJsonschemaMiddleware()
+                resolver_match = ResolverMatchMock('foo:bar')
+                request = HttpRequestMock(
+                    'POST', resolver_match, '{}', 'utf8')
+                sj.process_view(request, None, None, None)
 
     def test_process_exception(self):
-        pass
+        with self.settings(SIMPLE_JSONSCHEMA=s):
+            exception = KeyError()
+            sj = SimpleJsonschemaMiddleware()
+            resolver_match = ResolverMatchMock('foo:bar')
+            request = HttpRequestMock(
+                'POST', resolver_match, json_str, 'utf8')
+            result = sj.process_exception(request, exception)
+            self.assertIsNone(result)
