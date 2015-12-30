@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.conf import settings
 from django.http import HttpResponse
 from jsonschema import Draft4Validator
@@ -11,12 +12,6 @@ class SimpleJsonschemaException(Exception):
 
 
 class SimpleJsonschemaMiddleware(object):
-    """
-    {
-        (('put', 'post'), foo:bar): {},
-        ('post', abc:efg): {}
-    }
-    """
 
     def __init__(self):
         self.set_schemas(settings.SIMPLE_JSONSCHEMA)
@@ -45,7 +40,7 @@ class SimpleJsonschemaMiddleware(object):
         errors = list(schema.iter_errors(json_data))
         if len(errors):
             raise SimpleJsonschemaException(errors)
-        request.json_data = json_data
+        setattr(request, 'json_data', json_data)
         return None
 
     def process_exception(self, request, exception):
