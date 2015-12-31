@@ -1,9 +1,10 @@
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
 from django.test import TestCase
 from django_simple_jsonschema import SimpleJsonschemaMiddleware
 from django_simple_jsonschema import SimpleJsonschemaException
 from collections import namedtuple
 from jsonschema import Draft4Validator
+from django.http import HttpResponse
 
 
 s = {
@@ -27,7 +28,7 @@ s = {
     }
 }
 
-json_str = r'{"id": "foo", "password": "bar"}'
+json_str = '{"id": "あああ", "password": "bar"}'.encode('utf-8')
 ResolverMatchMock = namedtuple('ResolverMatchMock', ['view_name'])
 
 
@@ -59,14 +60,14 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
             sj = SimpleJsonschemaMiddleware()
             resolver_match = ResolverMatchMock('foo:bar:hoge')
             request = HttpRequestMock(
-                'POST', resolver_match, json_str, 'utf8')
+                'POST', resolver_match, json_str, 'utf-8')
             schema = sj.get_schema(request).schema
             schema1 = s[('post', 'foo:bar:hoge')]
             self.assertEqual(schema, schema1)
             self.assertIsInstance(sj.get_schema(request), Draft4Validator)
             resolver_match = ResolverMatchMock('foo:bar')
             request = HttpRequestMock(
-                'PUT', resolver_match, json_str, 'utf8')
+                'PUT', resolver_match, json_str, 'utf-8')
             schema = sj.get_schema(request).schema
             schema2 = s[('post', 'foo:bar:hoge')]
             self.assertEqual(schema, schema2)
@@ -77,14 +78,13 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
             sj = SimpleJsonschemaMiddleware()
             resolver_match = ResolverMatchMock('foo:bar')
             request = HttpRequestMock(
-                'POST', resolver_match, json_str, 'utf8')
+                'POST', resolver_match, json_str, 'utf-8')
             result = sj.process_view(request, None, None, None)
             self.assertIsNone(result)
             with self.assertRaises(SimpleJsonschemaException):
-                sj = SimpleJsonschemaMiddleware()
                 resolver_match = ResolverMatchMock('foo:bar')
                 request = HttpRequestMock(
-                    'POST', resolver_match, '{}', 'utf8')
+                    'POST', resolver_match, '{}'.encode('utf-8'), 'utf-8')
                 sj.process_view(request, None, None, None)
 
     def test_process_exception(self):
@@ -93,6 +93,14 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
             sj = SimpleJsonschemaMiddleware()
             resolver_match = ResolverMatchMock('foo:bar')
             request = HttpRequestMock(
-                'POST', resolver_match, json_str, 'utf8')
+                'POST', resolver_match, json_str, 'utf-8')
             result = sj.process_exception(request, exception)
             self.assertIsNone(result)
+            resolver_match = ResolverMatchMock('foo:bar')
+            request = HttpRequestMock(
+                'POST', resolver_match, '{"password": 1}'.encode('utf-8'), 'utf-8')
+            try:
+                sj.process_view(request, None, None, None)
+            except SimpleJsonschemaException as exception:
+                result = sj.process_exception(request, exception)
+                self.assertIsInstance(result, HttpResponse)

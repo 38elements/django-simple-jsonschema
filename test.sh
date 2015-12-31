@@ -1,1 +1,1 @@
-python manage.py test tests
+python3 manage.py test tests
