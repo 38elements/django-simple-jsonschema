@@ -1,6 +1,7 @@
-# django-simple-jsonschema
-namespace:nameとmethodでリクエストとjsonschemaを関連付ける。    
-ミドルウェアとして処理を付加する。   
+# Status Developping
+  
+## django-simple-jsonschema
+`django-simple-jsonschema` is middleware for integrating `django` and `jsonschema`.   
   
 ##### Requirements
 * Python 3+
