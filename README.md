@@ -2,7 +2,7 @@
   
 ## django-simple-jsonschema
 `django-simple-jsonschema` is middleware for integrating [django](https://github.com/django/django) and [jsonschema](https://github.com/Julian/jsonschema).   
-If the request is inappropriate, such as the following response will be sent.   
+If the request is invalid, such as the following response will be sent.   
 ```
 {
     "errors": [
