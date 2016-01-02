@@ -38,7 +38,7 @@ If the request is invalid, such as the following response will be sent.
 ```
 MIDDLEWARE_CLASSES = [
     # ...
-    django_simple_jsonschema.SimpleJsonschemaMiddleware
+    'django_simple_jsonschema.SimpleJsonschemaMiddleware'
 ]
 ```
 
