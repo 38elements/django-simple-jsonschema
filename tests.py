@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from django_simple_jsonschema import SimpleJsonschemaMiddleware
-from django_simple_jsonschema import SimpleJsonschemaException
 from collections import namedtuple
 from jsonschema import Draft4Validator
 from django.http import HttpResponse
@@ -82,26 +81,20 @@ class SimpleJsonschemaMiddlewareTestCase(TestCase):
                 'POST', resolver_match, json_str, 'utf-8')
             result = sj.process_view(request, None, None, None)
             self.assertIsNone(result)
-            with self.assertRaises(SimpleJsonschemaException):
-                resolver_match = ResolverMatchMock('foo:bar')
-                request = HttpRequestMock(
-                    'POST', resolver_match, '{}'.encode('utf-8'), 'utf-8')
-                sj.process_view(request, None, None, None)
+            resolver_match = ResolverMatchMock('foo:bar')
+            request = HttpRequestMock(
+                'POST', resolver_match, '{}'.encode('utf-8'), 'utf-8')
+            result = sj.process_view(request, None, None, None)
+            self.assertIsInstance(result, HttpResponse)
 
-    def test_process_exception(self):
+    def test_get_encoding(self):
         with self.settings(SIMPLE_JSONSCHEMA=s):
-            exception = KeyError()
             sj = SimpleJsonschemaMiddleware()
             resolver_match = ResolverMatchMock('foo:bar')
             request = HttpRequestMock(
-                'POST', resolver_match, json_str, 'utf-8')
-            result = sj.process_exception(request, exception)
-            self.assertIsNone(result)
-            resolver_match = ResolverMatchMock('foo:bar')
-            request = HttpRequestMock(
-                'POST', resolver_match, '{"password": 1}'.encode('utf-8'), 'utf-8')
-            try:
-                sj.process_view(request, None, None, None)
-            except SimpleJsonschemaException as exception:
-                result = sj.process_exception(request, exception)
-                self.assertIsInstance(result, HttpResponse)
+                'POST', resolver_match, json_str, 'cp932')
+            encoding = sj.get_encoding(request)
+            self.assertEqual(encoding, 'cp932')
+            request.encoding = None
+            encoding = sj.get_encoding(request)
+            self.assertEqual(encoding, 'utf-8')

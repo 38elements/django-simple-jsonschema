@@ -5,17 +5,11 @@ from jsonschema import Draft4Validator
 import json
 
 
-class SimpleJsonschemaException(Exception):
-
-    def __init__(self, errors):
-        self.errors = errors
-        self.default_encoding = 'utf-8'
-
-
 class SimpleJsonschemaMiddleware(object):
 
     def __init__(self):
         self.set_schemas(settings.SIMPLE_JSONSCHEMA)
+        self.default_encoding = 'utf-8'
 
     def get_encoding(self, request):
         return request.encoding if request.encoding else self.default_encoding
@@ -47,19 +41,14 @@ class SimpleJsonschemaMiddleware(object):
         json_data = json.loads(request.body.decode(encoding), encoding=encoding)
         errors = list(schema.iter_errors(json_data))
         if len(errors):
-            raise SimpleJsonschemaException(errors)
+            errors_data = {}
+            errors_data['url'] = request.path
+            errors = [
+                {'message': e.message, 'path': list(e.path), 'schema_path': list(e.schema_path)}
+                for e in errors
+            ]
+            errors_data['errors'] = errors
+            rv = json.dumps(errors_data)
+            return HttpResponse(rv, content_type='application/json')
         setattr(request, 'json_data', json_data)
         return None
-
-    def process_exception(self, request, exception):
-        if not isinstance(exception, SimpleJsonschemaException):
-            return None
-        errors_data = {}
-        errors_data['url'] = request.path
-        errors = [
-            {'message': e.message, 'path': list(e.path), 'schema_path': list(e.schema_path)}
-            for e in exception.errors
-        ]
-        errors_data['errors'] = errors
-        rv = json.dumps(errors_data)
-        return HttpResponse(rv, content_type='application/json')
