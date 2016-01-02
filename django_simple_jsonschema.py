@@ -39,7 +39,10 @@ class SimpleJsonschemaMiddleware(object):
         return self._schemas[key]
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        schema = self.get_schema(request)
+        try:
+            schema = self.get_schema(request)
+        except KeyError:
+            return None
         encoding = self.get_encoding(request)
         json_data = json.loads(request.body.decode(encoding), encoding=encoding)
         errors = list(schema.iter_errors(json_data))
