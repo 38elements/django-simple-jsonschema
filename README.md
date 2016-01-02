@@ -1,14 +1,14 @@
 # Warning Status Developping
   
-#### django-simple-jsonschema
+### django-simple-jsonschema
 `django-simple-jsonschema` is middleware for integrating `django` and `jsonschema`.   
   
-#### Requirements
+### Requirements
 * Python 3+
 * Django 1.8+
 * jsonschema 2.5+
 
-#### Installation
+### Installation
 ```
 MIDDLEWARE_CLASSES = [
     # ...
@@ -16,14 +16,14 @@ MIDDLEWARE_CLASSES = [
 ]
 ```
 
-#### Configuration
+### Configuration
 You define the following variables in your project’s settings.
 
-##### SIMPLE_JSONSCHEMA
+### SIMPLE_JSONSCHEMA
 `SIMPLE_JSONSCHEMA` is `dict`.     
 `SIMPLE_JSONSCHEMA` has key which is `('method', 'view_name')` or `(('method1', 'method2'), 'view_name'))`.  
 `SIMPLE_JSONSCHEMA` has value  which is schema.   
-Example  
+###### Example 
 ```
 SIMPLE_JSONSCHEMA = {
     ('post', 'namespace1:namespace2:name1'): {
