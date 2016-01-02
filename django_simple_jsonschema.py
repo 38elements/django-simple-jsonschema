@@ -51,9 +51,12 @@ class SimpleJsonschemaMiddleware(object):
     def process_exception(self, request, exception):
         if not isinstance(exception, SimpleJsonschemaException):
             return None
+        errors_data = {}
+        errors_data['url'] = request.path
         errors = [
             {'message': e.message, 'path': list(e.path), 'schema_path': list(e.schema_path)}
             for e in exception.errors
         ]
-        rv = json.dumps(errors)
+        errors_data['errors'] = errors
+        rv = json.dumps(errors_data)
         return HttpResponse(rv, content_type='application/json')

@@ -39,6 +39,7 @@ class HttpRequestMock():
         self.resolver_match = resolver_match
         self.body = body
         self.encoding = encoding
+        self.path = '/foo/bar/'
 
 
 class SimpleJsonschemaMiddlewareTestCase(TestCase):
