@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-simple-jsonschema',
-    version='0.0.1',
+    version='0.0.2',
     author='38elements',
     description='django-simple-jsonschema is middleware for integrating django and jsonschema. ',
     license='MIT License',
