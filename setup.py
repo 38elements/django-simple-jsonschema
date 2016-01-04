@@ -11,7 +11,7 @@ setup(
         'django>=1.8',
         'jsonschema>=2.5'
     ],
-    py_modules=['django_simple_jsonschema'],
+    packages=['django_simple_jsonschema'],
     keywords=['django', 'jsonschema'],
     classifiers=[
         'Development Status :: 3 - Alpha',
