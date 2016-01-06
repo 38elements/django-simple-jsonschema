@@ -38,6 +38,8 @@ If the request is invalid, such as the following response will be sent.
 pip3 install django-simple-jsonschema
 ```
 
+Add `'django_simple_jsonschema.SimpleJsonschemaMiddleware'` to your `MIDDLEWARE_CLASSES` setting.
+
 ```
 MIDDLEWARE_CLASSES = [
     # ...
