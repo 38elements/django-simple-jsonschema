@@ -43,6 +43,7 @@ class SimpleJsonschemaMiddleware(object):
         if len(errors):
             errors_data = {}
             errors_data['url'] = request.path
+            errors_data['method'] = request.method
             errors = [
                 {'message': e.message, 'path': list(e.path), 'schema_path': list(e.schema_path)}
                 for e in errors

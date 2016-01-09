@@ -24,7 +24,8 @@ If the request is invalid, such as the following response will be sent.
             ]
         }
     ], 
-    "url": "/foo/bar/"
+    "url": "/foo/bar/",
+    "method": "POST"
 }
 ```
   
@@ -34,6 +35,7 @@ If the request is invalid, such as the following response will be sent.
 * jsonschema 2.5+
 
 ## Installation
+You can install `django-simple-jsonschema` using `pip3`.
 ```
 pip3 install django-simple-jsonschema
 ```
