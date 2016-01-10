@@ -55,7 +55,7 @@ You define the following variables in your project’s settings.
 ##### SIMPLE_JSONSCHEMA
 `SIMPLE_JSONSCHEMA` is `dict`.     
 `SIMPLE_JSONSCHEMA` has key which is `('<method>', '<view_name>')` or `(('<method1>', '<method2>'), '<view_name>'))`.  
-`SIMPLE_JSONSCHEMA` has value  which is schema.   
+`SIMPLE_JSONSCHEMA` has value which is schema.   
 ###### Example 
 ```
 SIMPLE_JSONSCHEMA = {
@@ -77,4 +77,8 @@ SIMPLE_JSONSCHEMA = {
         }
     }
 }
+```
+You can validate schema using following command.
+```
+python3 manage.py check_schema
 ```
