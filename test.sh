@@ -1,1 +1,2 @@
-python3 manage.py test tests
+coverage run --source='django_simple_jsonschema' manage.py test tests
+coverage report
